@@ -1,0 +1,29 @@
+nav {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul li a {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+ul li a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.active-link {
+  position: relative;
+  font-weight: bold;
+}
+
+.active-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: white;
+}

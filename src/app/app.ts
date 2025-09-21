@@ -2,8 +2,10 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './core/navbar/navbar';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'; // <-- اضيفي هذا
-import { CommonModule } from '@angular/common'; // <-- اضيفي هذا
+import { Footer } from "./core/footer/footer";
+
+import { HttpClientModule } from '@angular/common/http';   
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +14,11 @@ import { CommonModule } from '@angular/common'; // <-- اضيفي هذا
     RouterOutlet,
     Navbar,
     ReactiveFormsModule,
-    HttpClientModule,    // <-- اضيفي هذا
-    CommonModule         // <-- اضيفي هذا
+    HttpClientModule,     
+    CommonModule,
+    Footer      
   ],
+
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

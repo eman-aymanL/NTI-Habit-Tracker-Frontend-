@@ -1,10 +1,17 @@
 <nav class="flex justify-between items-center p-4 bg-blue-600 text-white">
   <div class="text-xl font-bold">Habit Tracker</div>
   <ul class="flex gap-6">
-      <li><a routerLink="/register" routerLinkActive="underline">Register</a></li>
-    <li><a routerLink="/login" routerLinkActive="underline">Login</a></li>
-    <li><a routerLink="/habits" routerLinkActive="underline">Habits</a></li>
-    <li><a routerLink="/profile" routerLinkActive="underline">Profile</a></li>
-    <li><a href="#">Logout</a></li>
+    <!-- Show only when user is NOT logged in -->
+    <ng-container *ngIf="!authService.isLoggedIn()">
+      <li><a routerLink="/auth/register" routerLinkActive="active-link">Register</a></li>
+      <li><a routerLink="/auth/login" routerLinkActive="active-link">Login</a></li>
+    </ng-container>
+
+    <!-- Show only when user is logged in -->
+    <ng-container *ngIf="authService.isLoggedIn()">
+      <li><a routerLink="/habits" routerLinkActive="active-link">Habits</a></li>
+      <li><a routerLink="/profile" routerLinkActive="active-link">Profile</a></li>
+      <li><a href="javascript:void(0)" (click)="logout()">Logout</a></li>
+    </ng-container>
   </ul>
 </nav>

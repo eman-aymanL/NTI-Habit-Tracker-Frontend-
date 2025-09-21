@@ -6,16 +6,29 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3001/api';
+  private baseUrl = 'http://localhost:5000/api/users'; // Ensure this matches your backend URL
+  private apiUrl = 'http://localhost:5000/api'; // Base API URL for habit-related endpoints
 
   constructor(private http: HttpClient) {}
 
-  register(userData: { username: string; email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/users/register`, userData);
+  login(credentials: {email: string, password: string}): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, credentials);
   }
 
-  login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/users/login`, credentials);
+  register(userData: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register`, userData);
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, passwords: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/reset-password/${token}`, passwords);
+  }
+
+  getCurrentUser(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/me`);
   }
 
   // Habit-related methods
@@ -53,6 +66,15 @@ export class AuthService {
     return this.http.put(`${this.apiUrl}/users/change-password`, passwordData, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    // Additional cleanup if needed
   }
 
   private getAuthHeaders(): HttpHeaders {

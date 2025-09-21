@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -45,6 +45,12 @@ export class Login {
         error: (err) => {
           this.isLoading = false;
           console.error('Login failed', err);
+          console.error('Error details:', {
+            status: err.status,
+            statusText: err.statusText,
+            error: err.error,
+            message: err.message
+          });
           
           if (err.error && err.error.message) {
             this.errorMessage = err.error.message;
