@@ -1,69 +1,102 @@
-<div class="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
-  <h2 class="text-2xl font-bold mb-4 text-center">Login to Your Account</h2>
-
+<div class="min-h-[70vh] flex items-start justify-center py-12">
   <div
-    *ngIf="errorMessage"
-    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+    class="w-full max-w-md rounded-2xl border border-gray-200 bg-white/90 shadow-xl shadow-gray-200/40 backdrop-blur-sm"
   >
-    {{ errorMessage }}
-  </div>
-
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <div>
-      <label class="block mb-1 font-medium">Email</label>
-      <input
-        type="email"
-        formControlName="email"
-        class="w-full border p-2 rounded"
-        [class.border-red-500]="loginForm.get('email')?.touched && loginForm.get('email')?.errors"
-        placeholder="Enter your email"
-      />
-      <div
-        *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors"
-        class="text-red-500 text-sm mt-1"
-      >
-        {{ getFieldError('email') }}
-      </div>
+    <div class="px-6 pt-6 pb-2 text-center">
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900">Login to your account</h2>
+      <p class="mt-1 text-sm text-gray-500">Welcome back! Please enter your details</p>
     </div>
 
-    <div>
-      <label class="block mb-1 font-medium">Password</label>
-      <input
-        type="password"
-        formControlName="password"
-        class="w-full border p-2 rounded"
-        [class.border-red-500]="
-          loginForm.get('password')?.touched && loginForm.get('password')?.errors
-        "
-        placeholder="Enter your password"
-      />
-      <div
-        *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors"
-        class="text-red-500 text-sm mt-1"
-      >
-        {{ getFieldError('password') }}
+    <div class="px-6">
+      @if (errorMessage) {
+      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+        {{ errorMessage }}
+      </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            [class.border-red-500]="
+              loginForm.get('email')?.touched && loginForm.get('email')?.errors
+            "
+            [class.ring-2]="loginForm.get('email')?.touched && loginForm.get('email')?.errors"
+            [class.ring-red-200]="loginForm.get('email')?.touched && loginForm.get('email')?.errors"
+            placeholder="Enter your email"
+          />
+
+          @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+          <div class="mt-1 text-sm text-red-600">
+            {{ getFieldError('email') }}
+          </div>
+          }
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700">Password</label>
+          <input
+            type="password"
+            formControlName="password"
+            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            [class.border-red-500]="
+              loginForm.get('password')?.touched && loginForm.get('password')?.errors
+            "
+            [class.ring-2]="loginForm.get('password')?.touched && loginForm.get('password')?.errors"
+            [class.ring-red-200]="
+              loginForm.get('password')?.touched && loginForm.get('password')?.errors
+            "
+            placeholder="Enter your password"
+          />
+
+          @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+          <div class="mt-1 text-sm text-red-600">
+            {{ getFieldError('password') }}
+          </div>
+          }
+        </div>
+
+        <button
+          type="submit"
+          class="group relative inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 font-semibold text-white shadow-sm shadow-indigo-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-500 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
+          [disabled]="isLoading"
+        >
+          @if (isLoading) {
+          <svg
+            class="h-5 w-5 animate-spin text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" class="opacity-25" />
+            <path d="M4 12a8 8 0 018-8" class="opacity-75" />
+          </svg>
+          }
+
+          <span>{{ isLoading ? 'Logging in...' : 'Login' }}</span>
+        </button>
+      </form>
+
+      <div class="mt-4 text-center space-y-2">
+        <p>
+          <a
+            routerLink="/auth/forgot-password"
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+          >
+            Forgot your password?
+          </a>
+        </p>
+        <p class="mb-4 text-center pb-6 text-sm text-gray-600">
+          Don't have an account?
+          <a routerLink="/auth/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+            Register here
+          </a>
+        </p>
       </div>
     </div>
-
-    <button
-      type="submit"
-      class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-      [disabled]="isLoading"
-    >
-      <span *ngIf="!isLoading">Login</span>
-      <span *ngIf="isLoading">Logging in...</span>
-    </button>
-  </form>
-
-  <div class="mt-4 text-center space-y-2">
-    <p>
-      <a routerLink="/auth/forgot-password" class="text-blue-600 hover:underline text-sm">
-        Forgot your password?
-      </a>
-    </p>
-    <p class="mb-4 text-center">
-      Don't have an account?
-      <a routerLink="/auth/register" class="text-blue-600 hover:underline">Register here</a>
-    </p>
   </div>
 </div>
