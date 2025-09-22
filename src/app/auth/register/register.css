@@ -1,0 +1,9 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-image: url('/3dicons-calender-dynamic-color.png'), url('/3dicons-target-front-color.png');
+    background-repeat: no-repeat, no-repeat;
+    background-position: right center, left center;
+    background-position: left top, right bottom;
+    background-size: clamp(280px, 40vw, 520px), clamp(240px, 80vw, 480px);
+}

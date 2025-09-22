@@ -1,32 +1,46 @@
-<div class="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded text-center">
-  @if (isSuccess) {
-  <div class="my-8">
-    <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-4">
-      <h2 class="text-2xl font-bold mb-2">Verification Successful! 🎉</h2>
-      <p>
-        Your account has been successfully activated. You can now log in and use all the app's
-        features.
-      </p>
+<div class="min-h-[70vh] flex items-start justify-center py-12">
+  <div
+    class="w-full max-w-md rounded-2xl border border-gray-200 bg-white/90 shadow-xl shadow-gray-200/40 backdrop-blur-sm"
+  >
+    <!-- Header -->
+    <div class="px-6 pt-6 pb-2 text-center">
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900">Email Verification</h2>
+      <p class="mt-1 text-sm text-gray-500">We’re validating your email address</p>
     </div>
-    <a
-      routerLink="/auth/login"
-      class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition mt-4"
-    >
-      Log In
-    </a>
-  </div>
-  } @if (!isSuccess) {
-  <div class="my-8">
-    <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
-      <h2 class="text-xl font-bold mb-2">Verification Failed</h2>
-      <p>{{ errorMessage }}</p>
+
+    <div class="px-6 pb-6 text-center">
+      @if(isSuccess) {
+      <!-- Success Block -->
+      <div class="space-y-4">
+        <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+          <h3 class="text-lg font-semibold">Verification Successful! 🎉</h3>
+          <p class="mt-1 text-sm">
+            Your account has been successfully activated. You can now log in and use all the app's
+            features.
+          </p>
+        </div>
+        <a
+          routerLink="/auth/login"
+          class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-500 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+        >
+          Log In
+        </a>
+      </div>
+      } @else {
+      <!-- Failed Block -->
+      <div class="space-y-4">
+        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+          <h3 class="text-lg font-semibold">Verification Failed</h3>
+          <p class="mt-1 text-sm">{{ errorMessage }}</p>
+        </div>
+        <a
+          routerLink="/auth/login"
+          class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-500 active:translate-y-0 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+        >
+          Back to Log In
+        </a>
+      </div>
+      }
     </div>
-    <a
-      routerLink="/auth/login"
-      class="inline-block bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition mt-4"
-    >
-      Back to Log In
-    </a>
   </div>
-  }
 </div>
