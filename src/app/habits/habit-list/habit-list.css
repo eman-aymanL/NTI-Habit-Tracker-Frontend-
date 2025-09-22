@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  min-height: calc(100vh - 100px);
+}
+
+.container {
+  padding: 1.5rem;
+  max-width: 1200px;
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.bg-blue-600 {
+  background-color: #2563eb;
+}
+
+.bg-blue-600:hover {
+  background-color: #1d4ed8;
+}
+
+.bg-red-100 {
+  background-color: #fee2e2;
+}

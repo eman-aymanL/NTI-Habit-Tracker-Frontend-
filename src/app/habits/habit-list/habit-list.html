@@ -1,0 +1,163 @@
+<div class="container mx-auto p-6 max-w-6xl">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-800">My Habits</h1>
+      <p class="text-gray-600 mt-1">Track your daily progress and build better habits</p>
+    </div>
+    <button 
+  routerLink="/habits/new" 
+  class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
+>
+  <span class="mr-2">+</span> Add New Habit
+</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+    {{ errorMessage }}
+  </div>
+
+  <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+    <div class="flex flex-wrap gap-4 items-center">
+      <div>
+        <label class="block text-sm font-medium mb-1">Filter by Status</label>
+        <select 
+          [(ngModel)]="filterStatus" 
+          (change)="applyFilters()" 
+          class="border p-2 rounded w-32"
+        >
+          <option value="active">Active</option>
+          <option value="archived">Archived</option>
+          <option value="all">All</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-medium mb-1">Sort by</label>
+        <select 
+          [(ngModel)]="sortBy" 
+          (change)="applyFilters()" 
+          class="border p-2 rounded w-32"
+        >
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="progress">Progress</option>
+        </select>
+      </div>
+
+      <div class="ml-auto">
+        <span class="text-sm text-gray-600">
+          Showing {{ filteredHabits.length }} of {{ habits.length }} habits
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading && habits.length === 0" class="text-center py-16">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+    <p class="mt-4 text-gray-600">Loading your habits...</p>
+  </div>
+
+  <div *ngIf="!isLoading && filteredHabits.length === 0" class="text-center py-16 bg-white rounded-lg shadow">
+    <div class="text-gray-400 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      </svg>
+    </div>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">No habits found</h3>
+    <p class="text-gray-500 mb-6">
+      {{ filterStatus === 'archived' ? 
+          'You don\'t have any archived habits yet' : 
+          'Start by adding your first habit to track your progress' 
+      }}
+    </p>
+    <button 
+      *ngIf="filterStatus !== 'archived'"
+      routerLink="/habits/new" 
+      class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+    >
+      Create Your First Habit
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && filteredHabits.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div 
+      *ngFor="let habit of filteredHabits" 
+      class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
+      [class.opacity-60]="habit.archived"
+    >
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex items-center">
+          <div 
+            class="w-4 h-4 rounded-full mr-3" 
+            [style.backgroundColor]="habit.color || '#4caf50'"
+          ></div>
+          <h3 class="text-lg font-semibold text-gray-800">{{ habit.title }}</h3>
+        </div>
+        <div class="flex space-x-2">
+          <button 
+            (click)="toggleArchive(habit)" 
+            class="text-gray-400 hover:text-gray-600"
+            [title]="habit.archived ? 'Unarchive habit' : 'Archive habit'"
+          >
+            {{ habit.archived ? '📁' : '📄' }}
+          </button>
+          <button 
+            (click)="deleteHabit(habit._id!)" 
+            class="text-red-400 hover:text-red-600"
+            title="Delete habit"
+          >
+            🗑️
+          </button>
+        </div>
+      </div>
+
+      <p *ngIf="habit.description" class="text-gray-600 mb-4 text-sm">
+        {{ habit.description }}
+      </p>
+
+      <div class="text-sm text-gray-500 mb-4 space-y-1">
+        <div class="flex items-center">
+          <span class="w-20">Frequency:</span>
+          <span class="font-medium">{{ habit.frequency }}</span>
+        </div>
+        <div *ngIf="habit.reminderTime" class="flex items-center">
+          <span class="w-20">Reminder:</span>
+          <span class="font-medium">⏰ {{ habit.reminderTime }}</span>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <div class="flex justify-between text-sm mb-2">
+          <span class="font-medium">Progress</span>
+          <span>{{ getProgressPercentage(habit) }}%</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            class="bg-blue-600 h-2 rounded-full transition-all" 
+            [style.width]="getProgressPercentage(habit) + '%'"
+          ></div>
+        </div>
+        <div class="text-xs text-gray-500 mt-1">
+          {{ getCompletedCount(habit) }} of {{ getTotalCount(habit) }} days completed
+        </div>
+      </div>
+
+      <div class="flex space-x-3">
+        <button 
+          [routerLink]="['/habits', habit._id]" 
+          class="flex-1 bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 transition text-sm"
+        >
+          View Details
+        </button>
+        
+        <button 
+  [routerLink]="['/habits', habit._id, 'edit']" 
+  class="flex-1 bg-blue-100 text-blue-700 py-2 rounded hover:bg-blue-200 transition text-sm"
+>
+  Edit
+</button>
+
+      </div>
+    </div>
+  </div>
+</div>
