@@ -1,1 +1,22 @@
-<p>progress-tracker works!</p>
+<div class="mx-auto max-w-7xl p-4 sm:p-6">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Calendar</h1>
+    <p class="text-gray-600">Track your habits across the month</p>
+  </div>
+
+  @if (errorMessage) {
+  <div class="mb-4 rounded-lg bg-rose-50 text-rose-700 ring-1 ring-rose-200 p-3">
+    {{ errorMessage }}
+  </div>
+  } @if (isLoading) {
+  <div class="py-16 text-center text-gray-500">Loading…</div>
+  } @else {
+  <app-calendar-view
+    [month]="month"
+    [year]="year"
+    [doneDates]="doneDates"
+    (monthChanged)="onMonthChanged($event)"
+    (dateSelected)="onDateSelected($event)"
+  ></app-calendar-view>
+  }
+</div>
