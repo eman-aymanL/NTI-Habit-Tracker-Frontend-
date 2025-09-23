@@ -1,1 +1,70 @@
-<p>calendar-view works!</p>
+<div
+  class="rounded-2xl bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 ring-1 ring-black/5 shadow-sm p-4 md:p-6"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <button
+      type="button"
+      (click)="prevMonth()"
+      class="rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+    >
+      Prev
+    </button>
+    <div class="text-sm font-semibold text-gray-800">{{ monthLabel }}</div>
+    <button
+      type="button"
+      (click)="nextMonth()"
+      class="rounded-lg px-2.5 py-1.5 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+    >
+      Next
+    </button>
+  </div>
+
+  <!-- Weekdays -->
+  <div class="mt-4 grid grid-cols-7 text-center text-[11px] font-medium text-gray-500">
+    <div>Sun</div>
+    <div>Mon</div>
+    <div>Tue</div>
+    <div>Wed</div>
+    <div>Thu</div>
+    <div>Fri</div>
+    <div>Sat</div>
+  </div>
+
+  <!-- Days Grid -->
+  <div class="mt-2 grid grid-cols-7 gap-1 md:gap-2">
+    @for (week of weeks; track $index) {
+      @for (day of week; track $index) {
+        <button
+          type="button"
+          (click)="selectDate(day.date)"
+          class="relative aspect-square w-full rounded-xl text-xs md:text-sm font-medium ring-1 ring-inset ring-gray-200 transition-all duration-200 ease-out hover:bg-gray-50 hover:-translate-y-0.5 active:scale-95"
+          [class.opacity-50]="!day.inMonth"
+          [class.bg-emerald-200/40]="day.done"
+          [class.text-emerald-700]="day.done"
+        >
+          <span
+            class="absolute top-1 left-1 text-[10px] md:text-xs"
+            [ngClass]="day.done ? 'text-emerald-600' : 'text-gray-500'"
+          >
+            {{ day.date.getDate() }}
+          </span>
+
+          @if (day.isToday) { <span class="absolute right-1 top-1 size-2 rounded-full bg-indigo-500"></span> }
+        </button>
+      }
+    }
+  </div>
+
+  <!-- Legend -->
+  <div class="mt-3 flex items-center gap-4 text-[11px] text-gray-500">
+    <div class="inline-flex items-center gap-1">
+      <span class="size-3 rounded bg-emerald-200 ring-1 ring-emerald-500"></span>
+      <span>Done</span>
+    </div>
+    <div class="inline-flex items-center gap-1">
+      <span class="size-3 rounded bg-indigo-500"></span>
+      <span>Today</span>
+    </div>
+  </div>
+</div>

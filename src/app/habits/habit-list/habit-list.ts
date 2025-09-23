@@ -4,12 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { Habit } from '../../models/habit';
 import { HabitService } from '../../services/habit';
+<<<<<<< HEAD
 import { HabitPopupComponent } from '../../habit-popup/habit-popup';
+=======
+import { HabitCard } from '../../shared/habit-card/habit-card';
+>>>>>>> 2946e5997fa7d6a31cbe09fe866ff56f24eb5df1
 
 @Component({
   selector: 'app-habit-list',
   standalone: true,
+<<<<<<< HEAD
   imports: [CommonModule, FormsModule, RouterModule,HabitPopupComponent],
+=======
+  imports: [CommonModule, FormsModule, RouterModule, HabitCard],
+>>>>>>> 2946e5997fa7d6a31cbe09fe866ff56f24eb5df1
   templateUrl: './habit-list.html',
   styleUrls: ['./habit-list.css']
 })
@@ -76,7 +84,7 @@ export class HabitListComponent implements OnInit {
         break;
       case 'progress':
         filtered = filtered.sort((a, b) => 
-          this.getProgressPercentage(b) - this.getProgressPercentage(a)
+          this.progressPercentage(b) - this.progressPercentage(a)
         );
         break;
     }
@@ -84,19 +92,22 @@ export class HabitListComponent implements OnInit {
     this.filteredHabits = filtered;
   }
 
-  getCompletedCount(habit: Habit): number {
-    if (!habit.progress) return 0;
-    return habit.progress.filter(p => p.done).length;
+  private isSameDay(a: Date | string, b: Date | string): boolean {
+    const da = new Date(a);
+    const db = new Date(b);
+    return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth() && da.getDate() === db.getDate();
   }
 
-  getTotalCount(habit: Habit): number {
-    return habit.progress ? habit.progress.length : 0;
+  private isDoneToday(habit: Habit): boolean {
+    const today = new Date();
+    return (habit.progress || []).some(p => this.isSameDay(p.date, today) && !!p.done);
   }
 
-  getProgressPercentage(habit: Habit): number {
-    const total = this.getTotalCount(habit);
-    const completed = this.getCompletedCount(habit);
-    return total > 0 ? Math.round((completed / total) * 100) : 0;
+  private progressPercentage(habit: Habit): number {
+    const prog = habit.progress || [];
+    const total = prog.length;
+    const completed = prog.filter(p => p.done).length;
+    return total ? Math.round((completed / total) * 100) : 0;
   }
 
   deleteHabit(habitId: string): void {
@@ -130,6 +141,7 @@ export class HabitListComponent implements OnInit {
       }
     });
   }
+<<<<<<< HEAD
     openPopup(): void {
     this.showPopup = true;
   }
@@ -142,5 +154,60 @@ export class HabitListComponent implements OnInit {
     this.habits.push(newHabit);
     this.applyFilters();
     this.closePopup();
+=======
+
+  // ==== Handlers for HabitCard events ====
+  onToggleToday(habit: Habit): void {
+    if (!habit._id) return;
+    const original: Habit = JSON.parse(JSON.stringify(habit));
+    const today = new Date();
+    const done = !this.isDoneToday(habit);
+
+    // Optimistic update: update progress locally
+    let progress = habit.progress ? [...habit.progress] : [];
+    const pIdx = progress.findIndex(p => this.isSameDay(p.date as any, today));
+    if (pIdx > -1) {
+      const existing = progress[pIdx];
+      progress[pIdx] = { ...existing, done } as any;
+    } else {
+      progress = [...progress, { date: today, done, note: '' } as any];
+    }
+    const optimisticHabit: Habit = { ...habit, progress };
+    this.replaceHabitInArrays(optimisticHabit);
+    this.applyFilters();
+
+    // Server update
+    const payload = { date: today, done } as any;
+    this.habitService.updateHabitProgress(habit._id, payload).subscribe({
+      next: (updated) => {
+        this.replaceHabitInArrays(updated);
+        this.applyFilters();
+      },
+      error: (error) => {
+        console.error('Error toggling today progress:', error);
+        // Rollback
+        this.replaceHabitInArrays(original);
+        this.applyFilters();
+      }
+    });
+  }
+
+  onEditHabit(habit: Habit): void {
+    this.router.navigate(['/habits', habit._id, 'edit']);
+  }
+
+  onDeleteHabit(habit: Habit): void {
+    if (!habit._id) return;
+    this.deleteHabit(habit._id);
+  }
+
+  trackById(index: number, habit: Habit) {
+    return habit._id || index;
+  }
+
+  private replaceHabitInArrays(updated: Habit) {
+    this.habits = this.habits.map(h => (h._id === updated._id ? updated : h));
+    // filteredHabits will be recalculated by applyFilters; keeping logic centralized
+>>>>>>> 2946e5997fa7d6a31cbe09fe866ff56f24eb5df1
   }
 }

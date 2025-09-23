@@ -1,0 +1,8 @@
+:host {
+	display: block;
+}
+
+/* Smooth hover elevation (complements Tailwind shadows) */
+:host .hover\:-translate-y-0\.5 {
+	will-change: transform, box-shadow;
+}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../core/services/auth';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
@@ -17,7 +18,9 @@ export class VerifyEmail implements OnInit {
   
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private auth: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -36,6 +39,11 @@ export class VerifyEmail implements OnInit {
           console.log('Verification successful:', response);
           this.isVerifying = false;
           this.isSuccess = true;
+          const token = response?.data?.token;
+          if (token) {
+            this.auth.setSession(token);
+            this.router.navigate(['/habits']);
+          }
         },
         error: (error) => {
           console.error('Verification error:', error);
