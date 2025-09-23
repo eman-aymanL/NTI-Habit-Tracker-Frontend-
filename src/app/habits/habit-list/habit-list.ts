@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { Habit } from '../../models/habit';
 import { HabitService } from '../../services/habit';
+import { HabitPopupComponent } from '../../habit-popup/habit-popup';
 
 @Component({
   selector: 'app-habit-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule,HabitPopupComponent],
   templateUrl: './habit-list.html',
   styleUrls: ['./habit-list.css']
 })
@@ -20,6 +21,7 @@ export class HabitListComponent implements OnInit {
   
   filterStatus: string = 'active';
   sortBy: string = 'newest';
+    showPopup: boolean = false;
 
   constructor(
     private habitService: HabitService,
@@ -29,7 +31,6 @@ export class HabitListComponent implements OnInit {
   ngOnInit(): void {
     this.loadHabits();
     
-    // الاستماع لأحداث التنقل وتحديث البيانات عند العودة إلى هذه الصفحة
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && event.url === '/habits') {
         this.loadHabits();
@@ -128,5 +129,18 @@ export class HabitListComponent implements OnInit {
         console.error('Error updating habit:', error);
       }
     });
+  }
+    openPopup(): void {
+    this.showPopup = true;
+  }
+
+  closePopup(): void {
+    this.showPopup = false;
+  }
+
+  onHabitCreated(newHabit: Habit): void {
+    this.habits.push(newHabit);
+    this.applyFilters();
+    this.closePopup();
   }
 }

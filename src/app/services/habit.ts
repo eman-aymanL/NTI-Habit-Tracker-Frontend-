@@ -7,7 +7,7 @@ import { Habit } from '../models/habit';
   providedIn: 'root'
 })
 export class HabitService {
-  private apiUrl = 'http://localhost:3001/api/habits';
+  private apiUrl = 'http://localhost:5000/api/habits';
 
   constructor(private http: HttpClient) {}
 

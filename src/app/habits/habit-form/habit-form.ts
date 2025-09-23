@@ -127,10 +127,8 @@ createHabit(): void {
     next: (response) => {
       this.isLoading = false;
       this.successMessage = 'Habit created successfully!';
-      
-      // الانتظار قليلاً لرؤية رسالة النجاح ثم الانتقال
-      setTimeout(() => {
-        this.router.navigate(['/habits']); // بدون state
+            setTimeout(() => {
+        this.router.navigate(['/habits']); 
       }, 1000);
     },
     error: (error) => {
@@ -149,7 +147,7 @@ updateHabit(): void {
       this.isLoading = false;
       this.successMessage = 'Habit updated successfully!';
       setTimeout(() => {
-        this.router.navigate(['/habits']); // بدون state
+        this.router.navigate(['/habits']);
       }, 1000);
     },
     error: (error) => {

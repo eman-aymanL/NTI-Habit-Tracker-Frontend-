@@ -1,16 +1,23 @@
 <div class="container mx-auto p-6 max-w-6xl">
+  <div class="container mx-auto p-6 max-w-6xl">
   <div class="flex justify-between items-center mb-8">
     <div>
       <h1 class="text-3xl font-bold text-gray-800">My Habits</h1>
       <p class="text-gray-600 mt-1">Track your daily progress and build better habits</p>
     </div>
     <button 
-  routerLink="/habits/new" 
-  class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
->
-  <span class="mr-2">+</span> Add New Habit
-</button>
+      (click)="openPopup()" 
+      class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center"
+    >
+      <span class="mr-2">+</span> Add New Habit
+    </button>
   </div>
+
+  <app-habit-popup 
+    *ngIf="showPopup"
+    (habitCreated)="onHabitCreated($event)"
+    (closePopup)="closePopup()"
+  ></app-habit-popup>
 
   <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
     {{ errorMessage }}
@@ -71,12 +78,12 @@
       }}
     </p>
     <button 
-      *ngIf="filterStatus !== 'archived'"
-      routerLink="/habits/new" 
-      class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-    >
-      Create Your First Habit
-    </button>
+  *ngIf="filterStatus !== 'archived'"
+  (click)="openPopup()" 
+  class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
+>
+  Create Your First Habit
+</button>
   </div>
 
   <div *ngIf="!isLoading && filteredHabits.length > 0" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

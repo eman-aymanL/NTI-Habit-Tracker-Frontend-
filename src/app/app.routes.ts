@@ -12,7 +12,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: 'habits', component: HabitListComponent,},
-  { path: 'habits/new', component: HabitFormComponent,},
+  // { path: 'habits/new', component: HabitFormComponent,},
   { path: 'habits/:id/edit', component: HabitFormComponent,},
   { path: 'habits/:id', component: HabitDetail},
   { path: 'profile', component: Profile},
