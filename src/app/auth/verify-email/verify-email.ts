@@ -24,13 +24,11 @@ export class VerifyEmail implements OnInit {
   ) {}
 
   ngOnInit() {
-    // استخراج الرمز من المسار
     const token = this.route.snapshot.paramMap.get('token');
     
     console.log('Extracted token:', token);
     
     if (token) {
-      // إرسال طلب للتحقق من الرمز
       const verifyUrl = `http://localhost:5000/api/users/verify-email/${token}`;
       console.log('Making verification request to:', verifyUrl);
       

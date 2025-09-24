@@ -62,7 +62,6 @@ export class HabitFormComponent implements OnInit {
     { label: 'Journaling', icon: faPenNib },
     { label: 'Puzzles', icon: faPuzzlePiece },
     { label: 'Planning', icon: faCalendarCheck },
-    { label: 'Review Goals', icon: faBullseye },
     { label: 'Focus', icon: faBullseye },
     { label: 'Less Social Media', icon: faMobileScreen },
     { label: 'Tidy Workspace', icon: faBroom },

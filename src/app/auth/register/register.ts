@@ -50,9 +50,9 @@ export class Register {
           console.log('Registration success', res);
           this.successMessage = 'Account created successfully! Please check your email for verification.';
           
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);
+          // setTimeout(() => {
+          //   this.router.navigate(['/login']);
+          // }, 3000);
         },
         error: (err) => {
           this.isLoading = false;

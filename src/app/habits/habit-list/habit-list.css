@@ -20,4 +20,17 @@
   }
 }
 
-/* Tailwind handles utility colors; custom overrides removed */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+fa-icon {
+  transition: transform 0.2s ease;
+}
+
+fa-icon:hover {
+  transform: scale(1.1);
+}

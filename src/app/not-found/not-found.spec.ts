@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HabitCard } from './habit-card';
+import { NotFound } from './not-found';
 
-describe('HabitCard', () => {
-  let component: HabitCard;
-  let fixture: ComponentFixture<HabitCard>;
+describe('NotFound', () => {
+  let component: NotFound;
+  let fixture: ComponentFixture<NotFound>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HabitCard]
+      imports: [NotFound]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HabitCard);
+    fixture = TestBed.createComponent(NotFound);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
