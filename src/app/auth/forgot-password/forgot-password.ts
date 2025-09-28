@@ -16,6 +16,7 @@ export class ForgotPasswordComponent {
   isLoading = false;
   errorMessage = '';
   isEmailSent = false;
+  errorCta: 'none' | 'register' = 'none';
 
   constructor(private fb: FormBuilder, private http: HttpClient) {
     this.forgotPasswordForm = this.fb.group({
@@ -38,6 +39,7 @@ export class ForgotPasswordComponent {
 
     this.isLoading = true;
     this.errorMessage = '';
+    this.errorCta = 'none';
 
     const email = this.forgotPasswordForm.value.email;
 
@@ -49,6 +51,9 @@ export class ForgotPasswordComponent {
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error.error?.message || 'Failed to send reset email. Please try again.';
+        if (error.status === 404 && (error.error?.accountNotFound || /not found/i.test(error.error?.message || ''))) {
+          this.errorCta = 'register';
+        }
       },
     });
   }

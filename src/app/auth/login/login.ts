@@ -14,6 +14,7 @@ import { AuthService } from '../../core/services/auth';
 export class Login {
   loginForm: FormGroup;
   errorMessage: string = '';
+  errorCta: 'none' | 'register' | 'verify' = 'none';
   isLoading: boolean = false;
 
   constructor(
@@ -31,6 +32,7 @@ export class Login {
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
+      this.errorCta = 'none';
       
       this.auth.login(this.loginForm.value).subscribe({
         next: (res) => {
@@ -54,8 +56,11 @@ export class Login {
           
           if (err.error && err.error.message) {
             this.errorMessage = err.error.message;
-            
-            if (err.error.needsEmailVerification) {
+
+            if (err.status === 404 && (err.error.accountNotFound || /not found/i.test(err.error.message))) {
+              this.errorCta = 'register';
+            } else if (err.error.needsEmailVerification) {
+              this.errorCta = 'verify';
               this.errorMessage += ' Please check your email for verification.';
             }
           } else {
