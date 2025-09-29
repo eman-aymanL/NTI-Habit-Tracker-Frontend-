@@ -6,6 +6,24 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script>
+      // Apply dark class before Angular boots to prevent flash of wrong theme
+      (function () {
+        try {
+          var ls = localStorage.getItem('theme');
+          var preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var isDark = ls === 'dark' || (!ls && preferDark);
+          var doc = document.documentElement;
+          if (isDark) {
+            doc.classList.add('dark');
+          } else {
+            doc.classList.remove('dark');
+          }
+        } catch (_) {
+          // no-op
+        }
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

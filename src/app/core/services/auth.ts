@@ -1,25 +1,90 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
+
+interface User {
+  _id: string;
+  username: string;
+  email: string;
+  createdAt?: string;
+  lastLogin?: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:5000/api/users'; // Ensure this matches your backend URL
-  private apiUrl = 'http://localhost:5000/api'; // Base API URL for habit-related endpoints
-
+  private baseUrl = 'http://localhost:5000/api/users';
+  private apiUrl = 'http://localhost:5000/api';
   private logoutTimerId: any = null;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  public currentUser$ = this.currentUserSubject.asObservable();
 
-  login(credentials: {email: string, password: string}): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, credentials);
+  constructor(private http: HttpClient, private router: Router) {
+    this.loadUserFromStorage();
+  }
+
+  private loadUserFromStorage(): void {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      this.currentUserSubject.next(JSON.parse(userData));
+    }
+  }
+
+  login(credentials: { email: string; password: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, credentials).pipe(
+      tap((response: any) => {
+        if (response.data && response.data.token) {
+          this.setSession(response.data.token);
+          // Always fetch fresh user profile to store a consistent shape
+          this.fetchCurrentUser();
+        }
+      })
+    );
   }
 
   register(userData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, userData);
+    return this.http.post(`${this.baseUrl}/register`, userData).pipe(
+      tap((response: any) => {
+        if (response.data && response.data.token) {
+          this.setSession(response.data.token);
+          if (response.data.user) {
+            this.setCurrentUser(response.data.user);
+          } else {
+            this.fetchCurrentUser();
+          }
+        }
+      })
+    );
+  }
+
+  private fetchCurrentUser(): void {
+    this.getCurrentUser().subscribe({
+      next: (userData: any) => {
+        if (userData?.data?.user) {
+          this.setCurrentUser(userData.data.user);
+        }
+      },
+      error: (error) => {
+        console.error('Failed to fetch user data:', error);
+      },
+    });
+  }
+
+  private setCurrentUser(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  getCurrentUserData(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  updateUserData(updatedUser: User): void {
+    this.setCurrentUser(updatedUser);
   }
 
   forgotPassword(email: string): Observable<any> {
@@ -31,43 +96,44 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/me`);
+    return this.http.get(`${this.baseUrl}/me`, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
-  // Habit-related methods
   addHabit(habitData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/habits`, habitData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   getHabits(): Observable<any> {
     return this.http.get(`${this.apiUrl}/habits`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   updateHabitProgress(habitId: string, progressData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/habits/${habitId}/progress`, progressData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   deleteHabit(habitId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/habits/${habitId}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   getMe(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/me`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   changePassword(passwordData: { oldPassword: string; newPassword: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/users/change-password`, passwordData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
@@ -80,11 +146,14 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('token_exp');
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+
     if (this.logoutTimerId) {
       clearTimeout(this.logoutTimerId);
       this.logoutTimerId = null;
     }
-    // navigate to login if not already there
+
     try {
       this.router.navigate(['/auth/login']);
     } catch {}
@@ -93,11 +162,10 @@ export class AuthService {
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
-  
-  // Session helpers
+
   setSession(token: string): void {
     localStorage.setItem('token', token);
     const exp = this.getTokenExpiration(token);
@@ -119,7 +187,6 @@ export class AuthService {
       const delay = expMs - Date.now();
       if (delay > 0) this.startLogoutTimer(delay);
     } else {
-      // fallback from token
       const expFromToken = this.getTokenExpiration(token);
       if (expFromToken) this.startLogoutTimer(expFromToken - Date.now());
     }
@@ -149,7 +216,6 @@ export class AuthService {
     try {
       const payload = this.parseJwt(token);
       if (!payload || !payload.exp) return null;
-      // exp is in seconds
       return payload.exp * 1000;
     } catch {
       return null;
@@ -158,7 +224,7 @@ export class AuthService {
 
   private isTokenExpired(token: string): boolean {
     const exp = this.getTokenExpiration(token);
-    if (!exp) return false; // if no exp claim, assume not expired
+    if (!exp) return false;
     return Date.now() >= exp;
   }
 
@@ -174,5 +240,4 @@ export class AuthService {
     );
     return JSON.parse(json);
   }
-  
 }

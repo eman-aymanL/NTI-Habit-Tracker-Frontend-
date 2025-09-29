@@ -1,3 +1,5 @@
 <app-navbar />
 <router-outlet></router-outlet>
-<app-footer />
+@if (!auth.isLoggedIn()) {
+	<app-footer />
+}

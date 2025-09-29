@@ -1,30 +1,140 @@
 <nav
-  class="sticky top-0 z-50 bg-slate-400 backdrop-blur supports-[backdrop-filter]:bg-white/10 bg-gray-900/40 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
+  class="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/10 bg-white/60 dark:bg-gray-900/60 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-black/10 dark:after:bg-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
 >
   <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-    <div class="relative flex h-16 items-center justify-between">
-      <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+    <div class="relative h-16 items-center grid grid-cols-3 sm:flex sm:justify-between">
+      <!-- Left: Mobile menu button -->
+      <div
+        class="flex items-center justify-start relative"
+        #leftMenuContainer
+        (click)="$event.stopPropagation()"
+      >
+        <button
+          type="button"
+          class="sm:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          aria-label="Open menu"
+          (click)="toggleMobileMenu()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-6"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M3.75 6.75A.75.75 0 0 1 4.5 6h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Zm0 5.25a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 0 1.5h-15a.75.75 0 0 1-.75-.75Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+
+        @if (isMobileMenuOpen) {
+        <div
+          class="absolute left-0 top-full z-50 mt-2 w-56 origin-top-left rounded-md bg-white dark:bg-gray-900 py-2 outline -outline-offset-1 outline-black/10 dark:outline-white/10 shadow-lg"
+        >
+          <a
+            routerLink="/habits"
+            (click)="isMobileMenuOpen = false"
+            class="block rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Habits
+          </a>
+          <a
+            routerLink="/calendar"
+            (click)="isMobileMenuOpen = false"
+            class="block rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Calendar
+          </a>
+          <button
+            type="button"
+            (click)="theme.toggle()"
+            class="w-full text-left rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-between"
+            title="Toggle theme"
+          >
+            <span>Theme</span>
+            <span
+              class="inline-flex items-center justify-center rounded-md p-1.5 ring-1 ring-inset ring-gray-200 dark:ring-gray-800"
+            >
+              <svg
+                @if(theme.isDark$ | async) { class="hidden" } @endif @else { class="block" } @endif *ngIf="!(theme.isDark$ | async)"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-4 text-amber-500"
+              >
+                <path
+                  d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 4a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1Zm9-9a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1Zm14.95 6.364a1 1 0 0 1-1.414 0l-.707-.707a1 1 0 0 1 1.414-1.414l.707.707a1 1 0 0 1 0 1.414Zm-12.728 0a1 1 0 0 1-1.414 0 1 1 0 0 1 0-1.414l.707-.707a1 1 0 0 1 1.414 1.414l-.707.707ZM16.95 6.343a1 1 0 1 1-1.414-1.414l.707-.707A1 1 0 1 1 17.657 5.636l-.707.707Z"
+                />
+              </svg>
+              <svg
+                @if(theme.isDark$ | async) { class="hidden" } @endif @else { class="block" } @endif *ngIf="theme.isDark$ | async"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-4 text-indigo-300"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+              </svg>
+            </span>
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Center: Logo (center on small, left on >= sm) -->
+      <div class="flex items-center justify-center sm:justify-start sm:flex-1">
         <div class="flex shrink-0 items-center gap-2">
           <img
             src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
             alt="Habit Tracker"
             class="h-8 w-auto"
           />
-          <span class="hidden sm:inline text-sm font-semibold tracking-widest text-indigo-600">
+          <span
+            class="hidden sm:inline text-sm font-semibold tracking-widest text-indigo-600 dark:text-indigo-400"
+          >
             HABITA
           </span>
         </div>
       </div>
 
       @if (authService.isLoggedIn()) {
-      <!-- Logged-in content -->
-      <div
-        class="absolute inset-y-0 right-0 flex items-center gap-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
-      >
+      <!-- Right: Logged-in content -->
+      <div class="flex items-center justify-end gap-4">
+        <button
+          type="button"
+          (click)="theme.toggle()"
+          class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+          title="Toggle theme"
+        >
+          <!-- sun/moon icon -->
+          <svg
+            *ngIf="!(theme.isDark$ | async)"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-5"
+          >
+            <path
+              d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 4a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1Zm9-9a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1Zm14.95 6.364a1 1 0 0 1-1.414 0l-.707-.707a1 1 0 0 1 1.414-1.414l.707.707a1 1 0 0 1 0 1.414Zm-12.728 0a1 1 0 0 1-1.414 0 1 1 0 0 1 0-1.414l.707-.707a1 1 0 0 1 1.414 1.414l-.707.707ZM16.95 6.343a1 1 0 1 1-1.414-1.414l.707-.707A1 1 0 1 1 17.657 5.636l-.707.707Zm-9.9 0L6.343 5.636A1 1 0 1 1 7.757 4.222l.707.707A1 1 0 1 1 7.05 6.343Z"
+            />
+          </svg>
+          <svg
+            *ngIf="theme.isDark$ | async"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-5"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+          </svg>
+        </button>
+
         <a
           routerLink="/habits"
           routerLinkActive="bg-indigo-800"
-          class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+          class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-semibold text-white dark:text-indigo-200 bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
         >
           Habits
         </a>
@@ -32,14 +142,14 @@
         <a
           routerLink="/calendar"
           routerLinkActive="bg-indigo-800"
-          class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+          class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-semibold text-white dark:text-indigo-200 bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
         >
           Calendar
         </a>
 
         <button
           type="button"
-          class="relative rounded-full p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+          class="relative rounded-full p-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
         >
           <span class="sr-only">View notifications</span>
           <svg
@@ -57,9 +167,9 @@
           </svg>
         </button>
 
-        <div class="relative" #profileMenuContainer>
+        <div class="relative" #profileMenuContainer (click)="$event.stopPropagation()">
           <button
-            (click)="toggleProfileMenu()"
+            (click)="$event.stopPropagation(); toggleProfileMenu()"
             class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
           >
             <span class="absolute -inset-1.5"></span>
@@ -73,24 +183,26 @@
 
           @if (isProfileMenuOpen) {
           <div
-            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 outline -outline-offset-1 outline-white/10 shadow-lg"
+            class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-gray-900 py-1 outline -outline-offset-1 outline-black/10 dark:outline-white/10 shadow-lg"
           >
             <a
               routerLink="/profile"
-              class="block rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              (click)="isProfileMenuOpen = false"
+              class="block rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               Your profile
             </a>
             <a
               routerLink="/settings"
-              class="block rounded-md px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              (click)="isProfileMenuOpen = false"
+              class="block rounded-md px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               Settings
             </a>
             <a
               href="#"
               (click)="logout($event)"
-              class="block rounded-md px-4 py-2 text-sm text-rose-600 hover:bg-gray-100"
+              class="block rounded-md px-4 py-2 text-sm dark:text-rose-600 text-rose-600 hover:bg-gray-100 dark:hover:bg-gray-800"
             >
               Sign out
             </a>
@@ -99,20 +211,45 @@
         </div>
       </div>
       } @else {
-      <!-- Logged-out content -->
-      <div
-        class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
-      >
+      <!-- Right: Logged-out content -->
+      <div class="flex items-center justify-end">
         <div class="flex items-center gap-2">
+          <button
+            type="button"
+            (click)="theme.toggle()"
+            class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+            title="Toggle theme"
+          >
+            <svg
+              @if(theme.isDark$ | async) { class="block" } @endif @else { class="hidden" } @endif *ngIf="!(theme.isDark$ | async)"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-5 "
+            >
+              <path
+                d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 4a1 1 0 0 1-1-1v-1a1 1 0 1 1 2 0v1a1 1 0 0 1-1 1Zm9-9a1 1 0 0 1-1 1h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1ZM4 12a1 1 0 0 1-1 1H2a1 1 0 1 1 0-2h1a1 1 0 0 1 1 1Zm14.95 6.364a1 1 0 0 1-1.414 0l-.707-.707a1 1 0 0 1 1.414-1.414l.707.707a1 1 0 0 1 0 1.414Zm-12.728 0a1 1 0 0 1-1.414 0 1 1 0 0 1 0-1.414l.707-.707a1 1 0 0 1 1.414 1.414l-.707.707ZM16.95 6.343a1 1 0 1 1-1.414-1.414l.707-.707A1 1 0 1 1 17.657 5.636l-.707.707Z"
+              />
+            </svg>
+            <svg
+              *ngIf="theme.isDark$ | async"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-5"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+            </svg>
+          </button>
           <a
             routerLink="/auth/login"
-            class="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-600 ring-1 ring-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+            class="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-600 dark:text-indigo-200 ring-1 ring-indigo-200/60 dark:ring-indigo-400/30 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-700 dark:hover:text-indigo-200 transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
           >
             Login
           </a>
           <a
             routerLink="/auth/register"
-            class="rounded-lg px-3 py-2 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
+            class="rounded-lg px-3 py-2 text-sm font-semibold text-white dark:text-indigo-200 bg-indigo-600 hover:bg-indigo-500 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-95"
           >
             Register
           </a>

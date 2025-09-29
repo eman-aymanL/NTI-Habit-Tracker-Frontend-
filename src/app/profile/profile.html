@@ -1,4 +1,311 @@
-<div class="p-6">
-  <h1 class="text-2xl font-bold">Profile Page</h1>
-  <p>This is the profile page content.</p>
+<div class="min-h-screen py-8">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="text-center py-16">
+      <div
+        class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"
+      ></div>
+      <p class="mt-4 text-gray-600 dark:text-gray-400">Loading your profile...</p>
+    </div>
+    }
+
+    <!-- Error Message -->
+    @if (errorMessage) {
+    <div
+      class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-900/60 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6"
+    >
+      {{ errorMessage }}
+    </div>
+    }
+
+    <!-- Profile Content -->
+    @if (user && !isLoading) {
+    <div class="space-y-6">
+      <!-- Header Section -->
+      <div
+        class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-800"
+      >
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between">
+          <div class="flex items-center space-x-4 mb-4 md:mb-0">
+            <div
+              class="w-20 h-20 rounded-full overflow-hidden border-2 border-indigo-100/50 dark:border-indigo-900/40 shadow-sm cursor-pointer"
+              (click)="onProfileAvatarClick($event)"
+              title="Open profile menu"
+            >
+              <img
+                [src]="defaultProfileImage"
+                alt="{{ user.username }}'s profile picture"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                {{ user.username }}
+              </h1>
+              <p class="text-gray-600 dark:text-gray-400 flex items-center">
+                <fa-icon [icon]="icons.envelope" class="mr-2 text-sm"></fa-icon>
+                {{ user.email }}
+              </p>
+              <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                Member for {{ getMemberDuration() }}
+              </p>
+            </div>
+          </div>
+          <div class="flex space-x-3">
+            <button
+              (click)="onLogout()"
+              class="flex items-center space-x-2 px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+            >
+              <fa-icon [icon]="icons.logout"></fa-icon>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div
+          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-5 text-center border border-gray-200 dark:border-gray-800"
+        >
+          <div
+            class="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <fa-icon [icon]="icons.chart" class="text-xl text-blue-600"></fa-icon>
+          </div>
+          <div class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ totalHabits }}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Total Habits</div>
+        </div>
+
+        <div
+          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-5 text-center border border-gray-200 dark:border-gray-800"
+        >
+          <div
+            class="w-12 h-12 bg-green-50 dark:bg-green-900/30 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <fa-icon [icon]="icons.check" class="text-xl text-green-600"></fa-icon>
+          </div>
+          <div class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            {{ completedHabits }}
+          </div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Completed</div>
+        </div>
+
+        <div
+          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-5 text-center border border-gray-200 dark:border-gray-800"
+        >
+          <div
+            class="w-12 h-12 bg-orange-50 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <fa-icon [icon]="icons.fire" class="text-xl text-orange-600"></fa-icon>
+          </div>
+          <div class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ currentStreak }}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Day Streak</div>
+        </div>
+
+        <div
+          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-5 text-center border border-gray-200 dark:border-gray-800"
+        >
+          <div
+            class="w-12 h-12 bg-purple-50 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mx-auto mb-3"
+          >
+            <fa-icon [icon]="icons.trophy" class="text-xl text-purple-600"></fa-icon>
+          </div>
+          <div class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            {{ totalProgress }}%
+          </div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Overall Progress</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div
+        class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800"
+      >
+        <div class="border-b border-gray-200 dark:border-gray-800">
+          <nav class="flex space-x-8 px-6">
+            <button
+              (click)="onTabChange('overview')"
+              [class]="
+                activeTab === 'overview'
+                  ? 'border-indigo-500 text-indigo-600 border-b-2 py-4 px-1 text-sm font-medium'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-700 border-b-2 py-4 px-1 text-sm font-medium'
+              "
+            >
+              Overview
+            </button>
+            <button
+              (click)="onTabChange('habits')"
+              [class]="
+                activeTab === 'habits'
+                  ? 'border-indigo-500 text-indigo-600 border-b-2 py-4 px-1 text-sm font-medium'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-700 border-b-2 py-4 px-1 text-sm font-medium'
+              "
+            >
+              My Habits
+            </button>
+            <button
+              (click)="onTabChange('activity')"
+              [class]="
+                activeTab === 'activity'
+                  ? 'border-indigo-500 text-indigo-600 border-b-2 py-4 px-1 text-sm font-medium'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-700 border-b-2 py-4 px-1 text-sm font-medium'
+              "
+            >
+              Recent Activity
+            </button>
+            <button
+              (click)="onTabChange('settings')"
+              [class]="
+                activeTab === 'settings'
+                  ? 'border-indigo-500 text-indigo-600 border-b-2 py-4 px-1 text-sm font-medium'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-4 px-1 text-sm font-medium'
+              "
+            ></button>
+          </nav>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="p-6">
+          <!-- Overview Tab -->
+          @if (activeTab === 'overview') {
+          <div class="space-y-6">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                Welcome Back!
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400">
+                You've been tracking your habits for {{ getMemberDuration() }}. Keep up the great
+                work on your personal development journey!
+              </p>
+            </div>
+
+            <!-- Top Performing Habits -->
+            <div>
+              <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3">
+                Top Performing Habits
+              </h4>
+              <div class="space-y-3">
+                @for (habit of getTopHabits(); track habit._id) {
+                <div
+                  class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                >
+                  <div class="flex items-center space-x-3">
+                    @if (habit.icon) {
+                    <fa-icon
+                      [icon]="getIconByName(habit.icon)"
+                      class="text-lg"
+                      [style.color]="habit.color || '#4caf50'"
+                    ></fa-icon>
+                    }
+                    <span class="font-medium">{{ habit.title }}</span>
+                  </div>
+                  <span
+                    class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 px-2 py-1 rounded-full text-sm font-medium"
+                  >
+                    {{ getHabitProgressPercentage(habit) }}%
+                  </span>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Habits Tab -->
+          @if (activeTab === 'habits') {
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Your Habits</h3>
+            @if (habits.length === 0) {
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+              <p>No habits yet. Start by creating your first habit!</p>
+              <button
+                routerLink="/habits/new"
+                class="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-500 transition"
+              >
+                Create Habit
+              </button>
+            </div>
+            } @else {
+            <div class="grid gap-4 md:grid-cols-2">
+              @for (habit of habits; track habit._id) {
+              <div
+                class="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-lg p-4 hover:shadow-md transition"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="font-semibold text-gray-900 dark:text-gray-100">{{ habit.title }}</h4>
+                  <span class="text-sm text-gray-500 dark:text-gray-400 capitalize">{{
+                    habit.frequency
+                  }}</span>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">
+                  {{ habit.description || 'No description' }}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ getHabitProgressPercentage(habit) }}% complete
+                  </span>
+                  <button
+                    [routerLink]="['/habits', habit._id]"
+                    class="text-indigo-600 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-200 text-sm"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Activity Tab -->
+          @if (activeTab === 'activity') {
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+            @if (getRecentActivity().length === 0) {
+            <div class="text-center py-8 text-gray-500">
+              <p>No recent activity. Start tracking your habits!</p>
+            </div>
+            } @else {
+            <div class="space-y-3">
+              @for (activity of getRecentActivity(); track activity.date) {
+              <div class="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <fa-icon
+                  [icon]="activity.done ? icons.check : icons.fire"
+                  [class]="activity.done ? 'text-green-500' : 'text-gray-400 dark:text-gray-500'"
+                ></fa-icon>
+                <div class="flex-1">
+                  <span class="font-medium text-gray-900 dark:text-gray-100">{{
+                    activity.habitTitle
+                  }}</span>
+                  <span class="text-gray-500 dark:text-gray-400 text-sm ml-2">
+                    on {{ activity.date | date : 'mediumDate' }}
+                  </span>
+                  @if (activity.note) {
+                  <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">"{{ activity.note }}"</p>
+                  }
+                </div>
+                <span
+                  [class]="
+                    activity.done
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-gray-500 dark:text-gray-400'
+                  "
+                  class="text-sm font-medium"
+                >
+                  {{ activity.done ? 'Completed' : 'Skipped' }}
+                </span>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
 </div>
