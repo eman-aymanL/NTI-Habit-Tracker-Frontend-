@@ -1,26 +1,44 @@
 <div class="min-h-[70vh] flex items-start justify-center py-12">
   <div
-    class="w-full max-w-md rounded-2xl border border-gray-200 bg-white/90 shadow-xl shadow-gray-200/40 backdrop-blur-sm"
+    class="w-full max-w-md rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 shadow-xl shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-sm"
   >
     <div class="px-6 pt-6 pb-2 text-center">
-      <h2 class="text-2xl font-bold tracking-tight text-gray-900">Login to your account</h2>
-      <p class="mt-1 text-sm text-gray-500">Welcome back! Please enter your details</p>
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+        Login to your account
+      </h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+        Welcome back! Please enter your details
+      </p>
     </div>
 
     <div class="px-6">
       @if (errorMessage) {
-      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-        {{ errorMessage }}
+      <div
+        class="mb-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-red-700 dark:text-red-300"
+      >
+        <div>{{ errorMessage }}</div>
+        @if (errorCta === 'register') {
+        <div class="mt-2 text-sm">
+          <span>Don't have an account yet?</span>
+          <a
+            routerLink="/auth/register"
+            class="font-semibold text-indigo-700 dark:text-indigo-300 underline underline-offset-2 hover:text-indigo-500 dark:hover:text-indigo-200"
+            >Create an account</a
+          >
+        </div>
+        }
       </div>
       }
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">Email</label>
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Email</label
+          >
           <input
             type="email"
             formControlName="email"
-            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             [class.border-red-500]="
               loginForm.get('email')?.touched && loginForm.get('email')?.errors
             "
@@ -30,18 +48,20 @@
           />
 
           @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
-          <div class="mt-1 text-sm text-red-600">
+          <div class="mt-1 text-sm text-red-600 dark:text-red-400">
             {{ getFieldError('email') }}
           </div>
           }
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">Password</label>
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Password</label
+          >
           <input
             type="password"
             formControlName="password"
-            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             [class.border-red-500]="
               loginForm.get('password')?.touched && loginForm.get('password')?.errors
             "
@@ -53,7 +73,7 @@
           />
 
           @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
-          <div class="mt-1 text-sm text-red-600">
+          <div class="mt-1 text-sm text-red-600 dark:text-red-400">
             {{ getFieldError('password') }}
           </div>
           }
@@ -85,14 +105,17 @@
         <p>
           <a
             routerLink="/auth/forgot-password"
-            class="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            class="text-sm font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-200"
           >
             Forgot your password?
           </a>
         </p>
-        <p class="mb-4 text-center pb-6 text-sm text-gray-600">
+        <p class="mb-4 text-center pb-6 text-sm text-gray-600 dark:text-gray-400">
           Don't have an account?
-          <a routerLink="/auth/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+          <a
+            routerLink="/auth/register"
+            class="font-medium text-indigo-600 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-200"
+          >
             Register here
           </a>
         </p>

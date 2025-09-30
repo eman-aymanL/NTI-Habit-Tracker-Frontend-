@@ -13,7 +13,7 @@ interface User {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private baseUrl = 'http://localhost:5000/api/users';
@@ -34,14 +34,13 @@ export class AuthService {
     }
   }
 
-  login(credentials: {email: string, password: string}): Observable<any> {
-    
+  login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, credentials).pipe(
       tap((response: any) => {
         if (response.data && response.data.token) {
           this.setSession(response.data.token);
-          localStorage.setItem('username', response.data.user);
-                    this.fetchCurrentUser();
+          // Always fetch fresh user profile to store a consistent shape
+          this.fetchCurrentUser();
         }
       })
     );
@@ -65,13 +64,13 @@ export class AuthService {
   private fetchCurrentUser(): void {
     this.getCurrentUser().subscribe({
       next: (userData: any) => {
-        if (userData.data) {
-          this.setCurrentUser(userData.data);
+        if (userData?.data?.user) {
+          this.setCurrentUser(userData.data.user);
         }
       },
       error: (error) => {
         console.error('Failed to fetch user data:', error);
-      }
+      },
     });
   }
 
@@ -98,43 +97,43 @@ export class AuthService {
 
   getCurrentUser(): Observable<any> {
     return this.http.get(`${this.baseUrl}/me`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   addHabit(habitData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/habits`, habitData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   getHabits(): Observable<any> {
     return this.http.get(`${this.apiUrl}/habits`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   updateHabitProgress(habitId: string, progressData: any): Observable<any> {
     return this.http.put(`${this.apiUrl}/habits/${habitId}/progress`, progressData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   deleteHabit(habitId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/habits/${habitId}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   getMe(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users/me`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
   changePassword(passwordData: { oldPassword: string; newPassword: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/users/change-password`, passwordData, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
@@ -147,14 +146,14 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('token_exp');
-    localStorage.removeItem('currentUser'); 
-    this.currentUserSubject.next(null); 
-    
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+
     if (this.logoutTimerId) {
       clearTimeout(this.logoutTimerId);
       this.logoutTimerId = null;
     }
-    
+
     try {
       this.router.navigate(['/auth/login']);
     } catch {}
@@ -163,7 +162,7 @@ export class AuthService {
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
 

@@ -1,12 +1,12 @@
 <div class="min-h-[70vh] flex items-start justify-center py-12">
   <div
-    class="w-full max-w-2xl rounded-2xl border border-gray-200 bg-white/90 shadow-xl shadow-gray-200/40 backdrop-blur-sm"
+    class="w-full max-w-2xl rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 shadow-xl shadow-gray-200/40 dark:shadow-black/30 backdrop-blur-sm"
   >
     <div class="px-6 pt-6 pb-2">
-      <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
         {{ isEditMode ? 'Edit Habit' : 'Create New Habit' }}
       </h2>
-      <p class="mt-1 text-sm text-gray-500">
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
         {{ isEditMode ? 'Update your habit details' : 'Add a new habit to track your progress' }}
       </p>
     </div>
@@ -14,14 +14,18 @@
     <div class="px-6">
       <!-- Error Message -->
       @if (errorMessage) {
-      <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+      <div
+        class="mb-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-red-700 dark:text-red-300"
+      >
         {{ errorMessage }}
       </div>
       }
 
       <!-- Success Message -->
       @if (successMessage) {
-      <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+      <div
+        class="mb-4 rounded-xl border border-green-200 dark:border-green-900/60 bg-green-50 dark:bg-green-900/30 px-4 py-3 text-green-700 dark:text-green-300"
+      >
         {{ successMessage }}
       </div>
       }
@@ -41,7 +45,7 @@
       <form (ngSubmit)="onSubmit()" class="space-y-5">
         <!-- Title -->
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Title <span class="text-red-500">*</span>
           </label>
           <input
@@ -49,34 +53,62 @@
             [(ngModel)]="habit.title"
             name="title"
             required
-            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2.5 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             placeholder="e.g., Exercise, Reading, Meditation"
           />
         </div>
 
         <!-- Description -->
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">Description</label>
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Description</label
+          >
           <textarea
             [(ngModel)]="habit.description"
             name="description"
             rows="3"
-            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2.5 text-gray-900 placeholder-gray-400 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             placeholder="Brief description of your habit..."
           ></textarea>
         </div>
 
-    
+        <!-- Icon Picker -->
+        <div>
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Icon</label
+          >
+          <div class="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2">
+            @for (icon of iconOptions; track icon.label) {
+            <button
+              type="button"
+              class="group aspect-square rounded-xl ring-1 ring-inset ring-gray-200 dark:ring-gray-800 hover:ring-indigo-300 dark:hover:ring-indigo-900/40 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition grid place-items-center"
+              [class.bg-indigo-100]="habit.icon === icon.icon.iconName"
+              [class.ring-indigo-300]="habit.icon === icon.icon.iconName"
+              (click)="habit.icon = icon.icon.iconName"
+            >
+              <fa-icon
+                [icon]="icon.icon"
+                class="text-lg text-gray-700 dark:text-gray-300 group-hover:text-indigo-700 dark:group-hover:text-indigo-300"
+              ></fa-icon>
+              <span class="sr-only">{{ icon.label }}</span>
+            </button>
+            }
+          </div>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            Choose an icon that represents your habit. You can change it later.
+          </p>
+        </div>
+
         <!-- Frequency -->
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Frequency <span class="text-red-500">*</span>
           </label>
           <select
             [(ngModel)]="habit.frequency"
             name="frequency"
             (change)="onFrequencyChange()"
-            class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2.5 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
           >
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -87,13 +119,13 @@
         <!-- Custom Days -->
         @if (habit.frequency === 'custom') {
         <div>
-          <label class="mb-2 block text-sm font-medium text-gray-700">
+          <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Select Days <span class="text-red-500">*</span>
           </label>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
             @for (day of daysOfWeek; track day.name) {
             <label
-              class="flex items-center rounded-lg px-3 py-2 ring-1 ring-inset ring-gray-200 hover:bg-gray-50"
+              class="flex items-center rounded-lg px-3 py-2 ring-1 ring-inset ring-gray-200 dark:ring-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
             >
               <input
                 type="checkbox"
@@ -101,21 +133,36 @@
                 (change)="toggleDaySelection(day)"
                 class="mr-2 h-4 w-4 text-indigo-600 rounded"
               />
-              <span class="text-sm text-gray-700">{{ day.name }}</span>
+              <span class="text-sm text-gray-700 dark:text-gray-300">{{ day.name }}</span>
             </label>
             }
           </div>
         </div>
         }
 
+        <!-- Reminder Time -->
+        <div>
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Reminder Time (Optional)</label
+          >
+          <input
+            type="time"
+            [(ngModel)]="habit.reminderTime"
+            name="reminderTime"
+            class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+          />
+        </div>
+
         <!-- Color -->
         <div>
-          <label class="mb-1 block text-sm font-medium text-gray-700">Color (Optional)</label>
+          <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >Color (Optional)</label
+          >
           <input
             type="color"
             [(ngModel)]="habit.color"
             name="color"
-            class="w-full h-10 p-1 border border-gray-200 rounded-xl"
+            class="w-full h-10 p-1 border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900"
             value="#4caf50"
           />
         </div>
@@ -123,23 +170,25 @@
         <!-- Dates -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700"
+            <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
               >Start Date (Optional)</label
             >
             <input
               type="date"
               [(ngModel)]="habit.startDate"
               name="startDate"
-              class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2.5 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+              class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             />
           </div>
           <div>
-            <label class="mb-1 block text-sm font-medium text-gray-700">End Date (Optional)</label>
+            <label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >End Date (Optional)</label
+            >
             <input
               type="date"
               [(ngModel)]="habit.endDate"
               name="endDate"
-              class="w-full rounded-xl border border-gray-300 bg-white/90 px-3 py-2.5 text-gray-900 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
+              class="w-full rounded-xl border border-gray-300 dark:border-gray-800 bg-white/90 dark:bg-gray-900/80 px-3 py-2.5 text-gray-900 dark:text-gray-100 shadow-sm focus:border-transparent focus:ring-2 focus:ring-indigo-500 transition"
             />
           </div>
         </div>
@@ -149,7 +198,7 @@
           <button
             type="button"
             (click)="cancel()"
-            class="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-all"
+            class="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
           >
             Cancel
           </button>

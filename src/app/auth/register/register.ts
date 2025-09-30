@@ -48,7 +48,10 @@ export class Register {
         next: (res) => {
           this.isLoading = false;
           console.log('Registration success', res);
-          this.successMessage = 'Account created successfully! Please check your email for verification.';
+          const emailSent = !!res?.emailSent;
+          this.successMessage = emailSent
+            ? 'Account created successfully! Please check your email for verification.'
+            : 'Account created successfully, but we could not send the verification email. Please use "Resend verification" or try again later.';
           
           // setTimeout(() => {
           //   this.router.navigate(['/login']);
