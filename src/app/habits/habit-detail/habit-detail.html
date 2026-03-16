@@ -3,29 +3,29 @@
   @if (isLoading) {
   <div class="text-center py-16">
     <div
-      class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"
+      class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"
     ></div>
-    <p class="mt-4 text-gray-600">Loading habit details...</p>
+    <p class="mt-4 text-gray-600 dark:text-gray-400">Loading habit details...</p>
   </div>
   }
 
   <!-- Error Message -->
   @if (errorMessage) {
-  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+  <div class="bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-900/60 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-6">
     {{ errorMessage }}
   </div>
   }
 
   <!-- Success Message -->
   @if (successMessage) {
-  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+  <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-900/60 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg mb-6">
     {{ successMessage }}
   </div>
   }
 
   <!-- Habit Details -->
   @if (habit && !isLoading) {
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 p-6">
     <!-- Header -->
     <div class="flex items-start justify-between mb-6">
       <div class="flex items-center">
@@ -34,20 +34,20 @@
           [style.backgroundColor]="habit.color || '#4caf50'"
         ></div>
         <div>
-          <h1 class="text-2xl font-bold text-gray-800">{{ habit.title }}</h1>
-          <p class="text-gray-600">{{ getFrequencyDisplay() }}</p>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ habit.title }}</h1>
+          <p class="text-gray-600 dark:text-gray-400">{{ getFrequencyDisplay() }}</p>
         </div>
       </div>
       <div class="flex space-x-2">
         <button
           [routerLink]="['/habits', habit._id, 'edit']"
-          class="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200 transition"
+          class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition border border-transparent dark:border-blue-900/40"
         >
           ✏️ Edit
         </button>
         <button
           routerLink="/habits"
-          class="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200 transition"
+          class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition border border-transparent dark:border-gray-700"
         >
           ← Back
         </button>
@@ -56,40 +56,40 @@
 
     <!-- Description -->
     @if (habit.description) {
-    <p class="text-gray-600 mb-6 p-4 bg-gray-50 rounded">
+    <p class="text-gray-600 dark:text-gray-400 mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
       {{ habit.description }}
     </p>
     }
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <div class="bg-blue-50 p-4 rounded text-center">
-        <div class="text-2xl font-bold text-blue-600">{{ getProgressPercentage() }}%</div>
-        <div class="text-sm text-blue-500">Completion Rate</div>
+      <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl text-center border border-blue-100 dark:border-blue-900/40">
+        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ getProgressPercentage() }}%</div>
+        <div class="text-sm text-blue-500 dark:text-blue-400/80">Completion Rate</div>
       </div>
-      <div class="bg-green-50 p-4 rounded text-center">
-        <div class="text-2xl font-bold text-green-600">{{ getCurrentStreak() }}</div>
-        <div class="text-sm text-green-500">Current Streak</div>
+      <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl text-center border border-green-100 dark:border-green-900/40">
+        <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ getCurrentStreak() }}</div>
+        <div class="text-sm text-green-500 dark:text-green-400/80">Current Streak</div>
       </div>
-      <div class="bg-purple-50 p-4 rounded text-center">
-        <div class="text-2xl font-bold text-purple-600">{{ getCompletedCount() }}</div>
-        <div class="text-sm text-purple-500">Completed Days</div>
+      <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl text-center border border-purple-100 dark:border-purple-900/40">
+        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ getCompletedCount() }}</div>
+        <div class="text-sm text-purple-500 dark:text-purple-400/80">Completed Days</div>
       </div>
-      <div class="bg-orange-50 p-4 rounded text-center">
-        <div class="text-2xl font-bold text-orange-600">{{ getTotalTrackedDays() }}</div>
-        <div class="text-sm text-orange-500">Total Tracked</div>
+      <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl text-center border border-orange-100 dark:border-orange-900/40">
+        <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">{{ getTotalTrackedDays() }}</div>
+        <div class="text-sm text-orange-500 dark:text-orange-400/80">Total Tracked</div>
       </div>
     </div>
 
     <!-- Progress Bar -->
     <div class="mb-6">
       <div class="flex justify-between text-sm mb-2">
-        <span class="font-medium">Overall Progress</span>
-        <span>{{ getProgressPercentage() }}%</span>
+        <span class="font-medium text-gray-700 dark:text-gray-300">Overall Progress</span>
+        <span class="text-gray-600 dark:text-gray-400">{{ getProgressPercentage() }}%</span>
       </div>
-      <div class="w-full bg-gray-200 rounded-full h-3">
+      <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
         <div
-          class="bg-blue-600 h-3 rounded-full transition-all duration-300"
+          class="bg-indigo-600 dark:bg-indigo-500 h-3 rounded-full transition-all duration-300"
           [style.width]="getProgressPercentage() + '%'"
         ></div>
       </div>
@@ -97,9 +97,9 @@
 
     <!-- Today's Progress Section -->
     <div
-      class="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg mb-6 border border-blue-200"
+      class="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 p-6 rounded-xl mb-6 border border-blue-200 dark:border-blue-900/40"
     >
-      <h3 class="font-semibold text-lg mb-4 text-gray-800">
+      <h3 class="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-100">
         Today's Progress - {{ selectedDate | date : 'fullDate' }}
       </h3>
 
@@ -107,42 +107,42 @@
       @if (isTodayValidForHabit()) { @if (!isTodayCompleted()) {
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium mb-2 text-gray-700">Add a note (optional)</label>
+          <label class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Add a note (optional)</label>
           <textarea
             [(ngModel)]="note"
             placeholder="How did it go today? Any thoughts or reflections..."
-            class="w-full border border-gray-300 p-3 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="w-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 p-3 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             rows="3"
           ></textarea>
         </div>
         <button
           (click)="markAsDone()"
-          class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold"
+          class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold shadow-sm"
         >
           ✅ Mark as Completed
         </button>
       </div>
       } @else {
-      <div class="bg-white p-4 rounded border border-green-200">
-        <div class="flex items-center text-green-700">
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-green-200 dark:border-green-900/40">
+        <div class="flex items-center text-green-700 dark:text-green-400">
           <span class="text-2xl mr-2">✅</span>
           <div>
             <p class="font-semibold">Habit completed for today!</p>
             @if (getTodaysNote()) {
-            <p class="text-sm mt-1 text-gray-600">"{{ getTodaysNote() }}"</p>
+            <p class="text-sm mt-1 text-gray-600 dark:text-gray-400">"{{ getTodaysNote() }}"</p>
             }
           </div>
         </div>
         <button
           (click)="markAsNotDone()"
-          class="text-red-600 hover:text-red-800 text-sm mt-3 flex items-center"
+          class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm mt-3 flex items-center"
         >
           <span class="mr-1">↶</span> Undo completion
         </button>
       </div>
       } } @else {
-      <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-        <div class="flex items-center text-yellow-700">
+      <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-lg border border-yellow-200 dark:border-yellow-900/40">
+        <div class="flex items-center text-yellow-700 dark:text-yellow-400">
           <span class="text-xl mr-2">⏸️</span>
           <div>
             <p class="font-semibold">Today is not a tracking day for this habit</p>
@@ -157,41 +157,40 @@
     </div>
 
     <!-- Progress History -->
-    <div class="bg-white border border-gray-200 rounded-lg p-6">
-      <h3 class="font-semibold text-lg mb-4 text-gray-800">Progress History</h3>
+    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6">
+      <h3 class="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-100">Progress History</h3>
 
       @if (!habit.progress || habit.progress.length === 0) {
-      <div class="text-center py-8 text-gray-500">
+      <div class="text-center py-8 text-gray-500 dark:text-gray-400">
         <div class="text-4xl mb-2">📊</div>
         <p>No progress recorded yet.</p>
         <p class="text-sm">Start tracking your habit to see your progress here!</p>
       </div>
       } @if (habit.progress && habit.progress.length > 0) {
-      <div class="space-y-3 max-h-96 overflow-y-auto">
+      <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
         @for (entry of habit.progress | slice:0:20; track entry.date) {
         <div
-          class="flex items-center justify-between p-3 border-b border-gray-100 hover:bg-gray-50 rounded"
-          [class.bg-green-50]="entry.done"
+          class="flex items-center justify-between p-4 rounded-xl border transition-colors"
+          [ngClass]="entry.done
+            ? 'bg-green-50 dark:bg-green-950/40 border-green-200 dark:border-green-900/50'
+            : 'bg-gray-50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700'"
         >
           <div class="flex items-center">
-            <span
-              class="text-lg mr-3"
-              [class.text-green-500]="entry.done"
-              [class.text-red-400]="!entry.done"
-            >
+            <span class="text-lg mr-3">
               {{ entry.done ? '✅' : '❌' }}
             </span>
             <div>
-              <span class="font-medium text-gray-800">{{ entry.date | date : 'mediumDate' }}</span>
+              <span class="font-medium text-gray-900 dark:text-gray-100">{{ entry.date | date : 'mediumDate' }}</span>
               @if (entry.note) {
-              <span class="block text-sm text-gray-600 mt-1">"{{ entry.note }}"</span>
+              <span class="block text-sm text-gray-500 dark:text-gray-400 mt-1 italic">"{{ entry.note }}"</span>
               }
             </div>
           </div>
           <span
-            class="text-sm font-medium"
-            [class.text-green-600]="entry.done"
-            [class.text-red-600]="!entry.done"
+            class="text-sm font-semibold px-3 py-1 rounded-full"
+            [ngClass]="entry.done
+              ? 'text-green-700 dark:text-green-300 bg-green-100 dark:bg-green-900/40'
+              : 'text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-900/40'"
           >
             {{ entry.done ? 'Completed' : 'Skipped' }}
           </span>
@@ -200,7 +199,7 @@
       </div>
       } @if (habit.progress && habit.progress.length > 20) {
       <div class="text-center mt-4">
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-gray-500 dark:text-gray-400">
           Showing latest 20 entries out of {{ habit.progress.length }}
         </p>
       </div>

@@ -56,20 +56,26 @@ export class HabitDetail implements OnInit {
   isTodayCompleted(): boolean {
     if (!this.habit?.progress) return false;
     
-    const today = new Date().toISOString().split('T')[0];
-    return this.habit.progress.some(p => 
-      new Date(p.date).toISOString().split('T')[0] === today && p.done
-    );
+    const today = new Date();
+    return this.habit.progress.some(p => {
+      const d = new Date(p.date);
+      return d.getFullYear() === today.getFullYear() &&
+             d.getMonth() === today.getMonth() &&
+             d.getDate() === today.getDate() && p.done;
+    });
   }
 
   // Get today's progress note
   getTodaysNote(): string {
     if (!this.habit?.progress) return '';
     
-    const today = new Date().toISOString().split('T')[0];
-    const todaysProgress = this.habit.progress.find(p => 
-      new Date(p.date).toISOString().split('T')[0] === today
-    );
+    const today = new Date();
+    const todaysProgress = this.habit.progress.find(p => {
+      const d = new Date(p.date);
+      return d.getFullYear() === today.getFullYear() &&
+             d.getMonth() === today.getMonth() &&
+             d.getDate() === today.getDate();
+    });
     
     return todaysProgress?.note || '';
   }
@@ -83,7 +89,7 @@ export class HabitDetail implements OnInit {
 
     this.isLoading = true;
     this.habitService.updateHabitProgress(this.habit._id, {
-      date: new Date(),
+      date: this.selectedDate,
       done: true,
       note: this.note
     }).subscribe({
@@ -111,7 +117,7 @@ export class HabitDetail implements OnInit {
 
     this.isLoading = true;
     this.habitService.updateHabitProgress(this.habit._id, {
-      date: new Date(),
+      date: this.selectedDate,
       done: false,
       note: ''
     }).subscribe({

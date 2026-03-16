@@ -139,23 +139,32 @@ export class HabitListComponent implements OnInit {
     if (!habit._id) return;
     const original: Habit = JSON.parse(JSON.stringify(habit));
     const today = new Date();
+    const todayStr = today.getFullYear() + '-' +
+      String(today.getMonth() + 1).padStart(2, '0') + '-' +
+      String(today.getDate()).padStart(2, '0');
     const done = !this.isDoneToday(habit);
 
     // Optimistic update: update progress locally
     let progress = habit.progress ? [...habit.progress] : [];
     const pIdx = progress.findIndex(p => this.isSameDay(p.date as any, today));
-    if (pIdx > -1) {
-      const existing = progress[pIdx];
-      progress[pIdx] = { ...existing, done } as any;
+    if (done) {
+      // Marking as done: add or update entry
+      if (pIdx > -1) {
+        const existing = progress[pIdx];
+        progress[pIdx] = { ...existing, done: true } as any;
+      } else {
+        progress = [...progress, { date: today, done: true, note: '' } as any];
+      }
     } else {
-      progress = [...progress, { date: today, done, note: '' } as any];
+      // Undoing: remove all entries for today
+      progress = progress.filter(p => !this.isSameDay(p.date as any, today));
     }
     const optimisticHabit: Habit = { ...habit, progress };
     this.replaceHabitInArrays(optimisticHabit);
     this.applyFilters();
 
-    // Server update
-    const payload = { date: today, done } as any;
+    // Server update - send local date string to avoid timezone issues
+    const payload = { date: todayStr, done } as any;
     this.habitService.updateHabitProgress(habit._id, payload).subscribe({
       next: (updated) => {
         this.replaceHabitInArrays(updated);

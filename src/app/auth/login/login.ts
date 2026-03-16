@@ -40,7 +40,6 @@ export class Login {
           console.log('Login success', res);
           
           if (res.data && res.data.token) {
-            this.auth.setSession(res.data.token);
             this.router.navigate(['/habits']);
           }
         },

@@ -276,7 +276,7 @@ export class Profile implements OnInit {
   }
 
   getTopHabits(): Habit[] {
-    return this.habits
+    return [...this.habits]
       .sort((a, b) => this.getHabitProgressPercentage(b) - this.getHabitProgressPercentage(a))
       .slice(0, 5);
   }
